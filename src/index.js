@@ -27,7 +27,17 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request;
+  
+  if(!user){
+    return response.status(404).json({ error: "User doesn't exists" });
+  }
+
+  if(user.todos.length >= 10 && user.pro === false) {
+    return response.status(403).json({ error: "User already has 10 todos" });
+  }
+
+  next();
 }
 
 function checksTodoExists(request, response, next) {
@@ -63,7 +73,7 @@ function findUserById(request, response, next) {
   if(!currentUser) {
     return response.status(404).json({ error: "User not found" });
   }
-  
+
   request.user = currentUser;
   next();
 }
